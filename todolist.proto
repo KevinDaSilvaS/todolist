@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package todolist;
+
+service Service {
+    rpc AddTask (AddTaskRequest) returns (Task) {}
+    rpc GetTasks (GetTasksRequest) returns (Tasks) {}
+    rpc UpdateTask (UpdateTaskRequest) returns (Task) {}
+    rpc DeleteTask (DeleteTaskRequest) returns (DeleteResult);
+}
+
+message AddTaskRequest {
+    string storyId     = 1;
+    string description = 2;
+}
+
+message GetTasksRequest {
+    string storyId = 1;
+}
+
+message UpdateTaskRequest {
+    optional string description = 1;
+    optional bool finished = 2;
+}
+
+message DeleteTaskRequest {
+    string taskId = 1;
+}
+
+message Task {
+    string storyId     = 1;
+    string taskId      = 2;
+    string description = 3;
+    bool   finished    = 4;
+}
+
+message Tasks {
+    repeated Task tasks = 1;
+}
+
+message DeleteResult {
+    bool success = 1;
+}
