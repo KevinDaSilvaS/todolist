@@ -8,7 +8,7 @@ service Service {
     rpc AddTask (AddTaskRequest) returns (Task) {}
     rpc GetTasks (GetTasksRequest) returns (Tasks) {}
     rpc UpdateTask (UpdateTaskRequest) returns (Task) {}
-    rpc DeleteTask (DeleteTaskRequest) returns (DeleteResult);
+    rpc DeleteTask (DeleteTaskRequest) returns (DeleteResult) {}
 }
 
 message AddTaskRequest {
@@ -21,8 +21,9 @@ message GetTasksRequest {
 }
 
 message UpdateTaskRequest {
-    optional string description = 1;
-    optional bool finished = 2;
+    string taskId = 1;
+    string description = 2;
+    bool finished = 3;
 }
 
 message DeleteTaskRequest {

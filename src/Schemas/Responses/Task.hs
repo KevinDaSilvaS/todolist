@@ -34,3 +34,8 @@ data Tasks = Tasks { tasks :: [Task] }
     deriving ( Eq, Show, Generic
             , ToSchema   TodoSchema "Tasks"
             , FromSchema TodoSchema "Tasks" )
+
+data DeleteResult = DeleteResult { success :: Bool } 
+    deriving ( Eq, Show, Generic
+            , ToSchema   TodoSchema "DeleteResult"
+            , FromSchema TodoSchema "DeleteResult" )
