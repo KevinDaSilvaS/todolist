@@ -17,6 +17,7 @@ import Mu.Server
 import Schema as S
 import Schemas.Requests.AddTaskRequest  as AddTask
 import Schemas.Requests.GetTasksRequest as GetTasks
+import Schemas.Requests.UpdateTaskRequest as UpTask
 import Schemas.Responses.Task as T
 
 main :: IO ()
@@ -30,26 +31,39 @@ addTask (AddTask.AddTaskRequest {
     }) = alwaysOk $ do
     pure $ T.Task {
         T.storyId = storyId,
-        taskId = storyId,
+        T.taskId = storyId,
         T.description = description,
-        finished = False
+        T.finished = False
     }
 
 getTasks (GetTasks.GetTasksRequest storyId) = alwaysOk $ do
         pure $ T.Tasks [ 
             T.Task {
                 T.storyId = storyId,
-                taskId = storyId,
+                T.taskId = storyId,
                 T.description = "description",
-                finished = False
+                T.finished = False
             },
             T.Task {
                 T.storyId = storyId,
-                taskId = storyId,
+                T.taskId = storyId,
                 T.description = "description",
-                finished = True
+                T.finished = True
             }]
+
+updateTask (UpTask.UpdateTaskRequest {
+        UpTask.taskId, 
+        UpTask.description, 
+        UpTask.finished
+    }) = alwaysOk $ do
+            pure $ T.Task {
+                T.storyId = "storyId",
+                T.taskId = taskId,
+                T.description = description,
+                T.finished = finished
+            }
 
 server :: MonadServer m => SingleServerT i S.Service m _
 server = singleService (method @"AddTask" addTask,
-                        method @"GetTasks" getTasks)
+                        method @"GetTasks" getTasks,
+                        method @"UpdateTask" updateTask)
