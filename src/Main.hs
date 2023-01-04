@@ -18,6 +18,7 @@ import Schema as S
 import Schemas.Requests.AddTaskRequest  as AddTask
 import Schemas.Requests.GetTasksRequest as GetTasks
 import Schemas.Requests.UpdateTaskRequest as UpTask
+import Schemas.Requests.DeleteTaskRequest as DelTask
 import Schemas.Responses.Task as T
 
 main :: IO ()
@@ -63,7 +64,14 @@ updateTask (UpTask.UpdateTaskRequest {
                 T.finished = finished
             }
 
+deleteTask (DelTask.DeleteTaskRequest {DelTask.taskId}) = 
+    alwaysOk $ do
+        pure $ T.DeleteResult {
+            success = True
+        }
+
 server :: MonadServer m => SingleServerT i S.Service m _
 server = singleService (method @"AddTask" addTask,
                         method @"GetTasks" getTasks,
-                        method @"UpdateTask" updateTask)
+                        method @"UpdateTask" updateTask,
+                        method @"DeleteTask" deleteTask)
