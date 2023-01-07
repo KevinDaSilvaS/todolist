@@ -16,7 +16,6 @@ connection = do
     
     pipe <- connect (host "localhost")
     isAuthenticated <- access pipe master txtDbName (auth txtUsername txtPassword)
-    print isAuthenticated
     if isAuthenticated then do
         return (pipe, txtDbName)
     else
