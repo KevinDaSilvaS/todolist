@@ -1,20 +1,19 @@
---{-# language OverloadedStrings #-}
 {-# language ExtendedDefaultRules #-}
 
 module Repository.Connection where
 
-import qualified Data.Text as T
-import Database.MongoDB
+import Data.Text( Text, pack )
+import Database.MongoDB ( connect, host, access, auth, master, Pipe )
 
-type Connection = (Pipe, T.Text)
+type Connection = (Pipe, Text)
 
-connection :: IO Connection
-connection = do
-    let txtDbName    = T.pack "admin"
-    let txtUsername  = T.pack "user"
-    let txtPassword  = T.pack "123"
+connection :: String -> String -> String -> String -> IO (Pipe, Text)
+connection dbName username password hostAddress = do
+    let txtDbName    = pack dbName
+    let txtUsername  = pack username
+    let txtPassword  = pack password
     
-    pipe <- connect (host "localhost")
+    pipe <- connect (host hostAddress)
     isAuthenticated <- access pipe master txtDbName (auth txtUsername txtPassword)
     if isAuthenticated then do
         return (pipe, txtDbName)

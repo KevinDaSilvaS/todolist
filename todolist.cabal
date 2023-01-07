@@ -41,3 +41,4 @@ executable todolist
     , AesonBson
     , mtl
     , base
+    , load-env
