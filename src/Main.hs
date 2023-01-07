@@ -37,19 +37,8 @@ addTask conn AddTask.AddTaskRequest {
     } = alwaysOk $ do insertTask conn storyId description
 
 getTasks conn (GetTasks.GetTasksRequest storyId) = alwaysOk $ do
-        pure $ T.Tasks [
-            T.Task {
-                T.storyId = storyId,
-                T.taskId = storyId,
-                T.description = "description",
-                T.finished = False
-            },
-            T.Task {
-                T.storyId = storyId,
-                T.taskId = storyId,
-                T.description = "description",
-                T.finished = True
-            }]
+        tasks <- findTasks conn storyId 0 50
+        pure $ T.Tasks tasks
 
 updateTask conn (UpTask.UpdateTaskRequest {
         UpTask.taskId,
