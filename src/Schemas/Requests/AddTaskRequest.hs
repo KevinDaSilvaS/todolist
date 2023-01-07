@@ -12,11 +12,11 @@
 
 module Schemas.Requests.AddTaskRequest where
 
-import Data.Text as T
-import GHC.Generics
+import Data.Text as T ( Text )
+import GHC.Generics ( Generic )
 
-import Mu.Quasi.GRpc
-import Mu.Schema
+import Mu.Quasi.GRpc ( grpc )
+import Mu.Schema ( FromSchema, ToSchema )
 
 grpc "TodoSchema" id "todolist.proto"
 
