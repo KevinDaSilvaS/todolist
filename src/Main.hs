@@ -1,9 +1,9 @@
 {-# language FlexibleContexts      #-}
 {-# language PartialTypeSignatures #-}
 {-# language OverloadedStrings     #-}
-{-# language ScopedTypeVariables     #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE DataKinds #-}
+{-# language ScopedTypeVariables   #-}
+{-# language TypeApplications #-}
+{-# language DataKinds #-}
 {-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
 {-# language DataKinds             #-}
 {-# language NamedFieldPuns        #-}
@@ -14,6 +14,10 @@ module Main where
 import Mu.GRpc.Server
 import Mu.Server
 
+import Repository.Connection
+import Repository.Repository
+import Control.Monad.Trans (liftIO)
+
 import Schema as S
 import Schemas.Requests.AddTaskRequest  as AddTask
 import Schemas.Requests.GetTasksRequest as GetTasks
@@ -23,22 +27,17 @@ import Schemas.Responses.Task as T
 
 main :: IO ()
 main = do
-    print "Server Running in port 8080" 
-    runGRpcApp msgProtoBuf 8080 server
+    conn <- liftIO connection
+    print "Server Running in port 8080"
+    runGRpcApp msgProtoBuf 8080 (server conn)
 
-addTask (AddTask.AddTaskRequest {
-    AddTask.storyId, 
+addTask conn AddTask.AddTaskRequest {
+    AddTask.storyId,
     AddTask.description
-    }) = alwaysOk $ do
-    pure $ T.Task {
-        T.storyId = storyId,
-        T.taskId = storyId,
-        T.description = description,
-        T.finished = False
-    }
+    } = alwaysOk $ do insertTask conn storyId description
 
-getTasks (GetTasks.GetTasksRequest storyId) = alwaysOk $ do
-        pure $ T.Tasks [ 
+getTasks conn (GetTasks.GetTasksRequest storyId) = alwaysOk $ do
+        pure $ T.Tasks [
             T.Task {
                 T.storyId = storyId,
                 T.taskId = storyId,
@@ -52,9 +51,9 @@ getTasks (GetTasks.GetTasksRequest storyId) = alwaysOk $ do
                 T.finished = True
             }]
 
-updateTask (UpTask.UpdateTaskRequest {
-        UpTask.taskId, 
-        UpTask.description, 
+updateTask conn (UpTask.UpdateTaskRequest {
+        UpTask.taskId,
+        UpTask.description,
         UpTask.finished
     }) = alwaysOk $ do
             pure $ T.Task {
@@ -64,14 +63,14 @@ updateTask (UpTask.UpdateTaskRequest {
                 T.finished = finished
             }
 
-deleteTask (DelTask.DeleteTaskRequest {DelTask.taskId}) = 
+deleteTask conn (DelTask.DeleteTaskRequest {DelTask.taskId}) =
     alwaysOk $ do
         pure $ T.DeleteResult {
             success = True
         }
 
-server :: MonadServer m => SingleServerT i S.Service m _
-server = singleService (method @"AddTask" addTask,
-                        method @"GetTasks" getTasks,
-                        method @"UpdateTask" updateTask,
-                        method @"DeleteTask" deleteTask)
+server :: MonadServer m => Connection -> SingleServerT i S.Service m _
+server conn = singleService (method @"AddTask" (addTask conn),
+                        method @"GetTasks" (getTasks conn),
+                        method @"UpdateTask" (updateTask conn),
+                        method @"DeleteTask" (deleteTask conn))
