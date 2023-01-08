@@ -3,7 +3,7 @@
 Haskell + gRPC = ❤️
 
 ### About the project:
-####### A haskell to-do-list microservice using gRPC
+###### A haskell to-do-list microservice using gRPC
 
 #### Tech stack
    - Mu-Haskell (🟪)[https://higherkindness.io/mu-haskell/]
