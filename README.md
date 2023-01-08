@@ -6,7 +6,7 @@ Haskell + gRPC = ❤️
 ##### A haskell to-do-list microservice using gRPC
 
 #### Tech stack
-   - Mu-Haskell (🟪)[https://higherkindness.io/mu-haskell/]
+   - Mu-Haskell [🟪](https://higherkindness.io/mu-haskell/)
    - Mongodb 🌿
    - Insomnia 🌒 (as gRPC client)
  
@@ -15,5 +15,5 @@ Haskell + gRPC = ❤️
    - GetTasks [Lists all tasks for a given storyId]
    - UpdateTask [Update one specific task]
    - DeleteTask [Removes one specific task]
-More details on the (proto)[https://github.com/KevinDaSilvaS/todolist/blob/main/todolist.proto] file
+More details on the [proto](https://github.com/KevinDaSilvaS/todolist/blob/main/todolist.proto) file
 
